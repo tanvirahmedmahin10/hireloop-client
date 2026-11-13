@@ -15,9 +15,6 @@ import {
 } from "@/components/ui/select"
 import { manageJobs } from "@/lib/job"
 
-/* -------------------------------------------------------------------------- */
-/*  Data — every row is a `JobPayload` (the type from the new-job form)       */
-/* -------------------------------------------------------------------------- */
 
 const jobs: JobPayload[] = await manageJobs()
 

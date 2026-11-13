@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 export function SiteHeader() {
 const { data: session,isPending } = authClient.useSession()
 const navLinks = [
-  { label: "Browse Jobs", href: "/jobs", active: true },
+  { label: "Browse Jobs", href: "/browse-jobs", active: true },
   { label: "Company", href: "/companies" },
   { label: "Pricing", href: "/pricing" },
   {label: "Dashboard", href: `/dashboard/${session?.user.role}` }

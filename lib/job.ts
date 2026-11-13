@@ -13,7 +13,7 @@ const res=await fetch(`${baseUrl}/jobs`,{
 return res.json()
 }
 
-export const manageJobs=async()=>{
-  const res=await fetch(`${baseUrl}/jobs`)
+export const manageJobs=async(query='')=>{
+  const res=await fetch(`${baseUrl}/jobs?${query}`)
   return res.json()
 }
