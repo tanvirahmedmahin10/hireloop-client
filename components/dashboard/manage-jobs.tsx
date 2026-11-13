@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/select"
 import { manageJobs } from "@/lib/job"
 
-
 const jobs: JobPayload[] = await manageJobs()
 
 const todayISO = new Date().toISOString().slice(0, 10)
