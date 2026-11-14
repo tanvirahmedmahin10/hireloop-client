@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 }
 
 const SignInPage = () => {
+  
   return (
     <div className="w-full rounded-[24px] border border-white/10 bg-[#151516] p-6 sm:p-10">
       <div className="flex flex-col items-center gap-2 text-center">

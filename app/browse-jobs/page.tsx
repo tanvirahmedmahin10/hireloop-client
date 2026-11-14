@@ -19,15 +19,17 @@ const BrowsingJobsPage = async ({
   const query = urlSearch.toString()
 
   let jobs: JobPayload[] = []
+  let allJobs: JobPayload[] = []
   try {
-    jobs = await manageJobs(query)
+    // `jobs` respects the current filters; `allJobs` keeps the sidebar options/counts stable.
+    ;[jobs, allJobs] = await Promise.all([manageJobs(query), manageJobs()])
   } catch {
     // TODO: surface API errors; render an empty list while the API is unreachable.
   }
 
   return (
     <div className="min-h-svh bg-[#08080a]">
-      <BrowseJobs jobs={Array.isArray(jobs) ? jobs : []} />
+      <BrowseJobs jobs={Array.isArray(jobs) ? jobs : []} allJobs={Array.isArray(allJobs) ? allJobs : []} />
     </div>
   )
 }

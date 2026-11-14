@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import * as React from "react"
 
 import { AuthCheckbox, AuthEmailInput, AuthPasswordInput } from "@/components/auth/form-fields"
@@ -14,7 +14,8 @@ export function SignInForm() {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
-
+const searchParams=useSearchParams()
+  const redirectTo=searchParams.get("redirectTo")??"/"
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)
@@ -27,7 +28,7 @@ export function SignInForm() {
       email: data.email,
       password: data.password,
       rememberMe: data.remember === "on",
-      callbackURL: "/",
+      callbackURL: redirectTo,
     })
 
     if (authError) {

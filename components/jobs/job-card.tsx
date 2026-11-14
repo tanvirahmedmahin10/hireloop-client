@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 import type { JobPayload } from "@/components/dashboard/new-job-form"
 
 /** Formats the `salary` field of a JobPayload for display, e.g. "$90k - $120k" or "$45 - $60 per hour". */
-function formatSalary(job: JobPayload) {
+export function formatSalary(job: JobPayload) {
   const { min, max, frequency } = job.salary
   if (min == null || max == null) return "Salary not specified"
   return frequency === "per year"

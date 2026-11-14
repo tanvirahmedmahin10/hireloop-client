@@ -1,5 +1,6 @@
 "use client"
 export interface JobPayload {
+  _id:number
   title: string
   company: string
   category: string

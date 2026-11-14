@@ -1,4 +1,5 @@
 import { Check } from "lucide-react"
+import { useRouter } from "next/navigation";
 
 /** A titled group of filter options (e.g. "Job Type", "Category"). */
 export function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
@@ -32,12 +33,26 @@ export function FilterCheckbox({
   type?: "checkbox" | "radio"
   defaultChecked?: boolean
 }) {
+  const route = useRouter()
+  const handleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Keep the filters that are already in the URL, then add/update this one.
+    const params = new URLSearchParams(window.location.search)
+    if (event.target.type === "checkbox") {
+      if (event.target.checked) params.set(name, event.target.value)
+      else params.delete(name)
+    } else {
+      params.set(name, event.target.value)
+    }
+    route.push(`/browse-jobs?${params.toString()}`)
+  }
   return (
     <label className="flex cursor-pointer items-center gap-3">
       <input
         type={type}
         name={name}
+        
         value={value ?? label}
+       onChange={handleFilter}
         defaultChecked={defaultChecked}
         className="peer sr-only"
       />

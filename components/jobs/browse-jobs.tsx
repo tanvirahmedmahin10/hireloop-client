@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -14,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useRouter } from "next/navigation"
 
 const sortOptions = [
   "Most Recent",
@@ -22,14 +24,21 @@ const sortOptions = [
   "Salary: Low to High",
 ]
 
-export function BrowseJobs({ jobs }: { jobs: JobPayload[] }) {
-  const jobTypes = [...new Set(jobs.map((job) => job.jobType))]
-  const jobCategories = [...new Set(jobs.map((job) => job.category))]
-  const remoteCount = jobs.filter((job) => job.isRemote).length
+export function BrowseJobs({ jobs, allJobs }: { jobs: JobPayload[]; allJobs: JobPayload[] }) {
+  const jobTypes = [...new Set(allJobs.map((job) => job.jobType))]
+  const jobCategories = [...new Set(allJobs.map((job) => job.category))]
+  const remoteCount = allJobs.filter((job) => job.isRemote).length
+const route=useRouter()
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const data = Object.fromEntries(formData.entries()) as Record<string, string>
+    const search = data.searchField
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    // TODO: set the search query here (e.g. router.push with the form values).
+    // Keep the filters that are already in the URL, then add/update the search term.
+    const params = new URLSearchParams(window.location.search)
+    if (search) params.set("search", search)
+    route.push(`browse-jobs?${params.toString()}`)
   }
 
   return (
@@ -42,7 +51,7 @@ export function BrowseJobs({ jobs }: { jobs: JobPayload[] }) {
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-4 size-[18px] -translate-y-1/2 text-[#8e9192]" />
           <input
-            name="search"
+            name="searchField"
             placeholder="Search by job title, keywords..."
             className="h-[58px] w-full rounded-[8px] border border-transparent bg-[#1a1a1f] pr-4 pl-11 text-sm text-[#ededef] outline-none placeholder:text-[#a0a0ab] focus-visible:border-[#5c53fe]/70"
           />
@@ -115,7 +124,8 @@ export function BrowseJobs({ jobs }: { jobs: JobPayload[] }) {
 
           <div className="mt-6 flex flex-col gap-3">
             {jobs.map((job) => (
-              <JobCard key={`${job.company}-${job.title}`} job={job} />
+              <Link key={job._id} href={`/browse-jobs/${job._id}`}>
+              <JobCard job={job} /></Link>
             ))}
             {jobs.length === 0 ? (
               <p className="rounded-[16px] border border-white/[0.06] bg-[#141418] p-10 text-center text-[13px] text-[#a0a0ab]">
