@@ -3,7 +3,7 @@
 import * as React from "react"
 import { ArrowLeft, CreditCard, Lock } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 // Plan info — wire these to the real plan/pricing data when Stripe is implemented.
 const plan = {
@@ -26,12 +26,19 @@ const formatAmount = (code: CurrencyCode, amount: number) =>
     : `BDT ${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
 export function PaymentCheckout() {
+  const searchParams = useSearchParams()
+  const canceled = searchParams.get("canceled")
   const route = useRouter()
   const [currency, setCurrency] = React.useState<CurrencyCode>("BDT")
   const selected = currencies.find((c) => c.code === currency)!
 
   return (
     <div className="mx-auto w-full max-w-[1152px] px-5 pb-16 sm:px-8">
+      {canceled ? (
+        <p className="mb-4 rounded-[8px] border border-[#f59e0b]/30 bg-[#f59e0b]/10 px-4 py-3 text-[13px] text-[#f59e0b]">
+          Your payment was canceled — you have not been charged. You can try again below.
+        </p>
+      ) : null}
       {/* Checkout top bar */}
       <div className="flex items-center justify-between py-6">
         <div className="flex items-center gap-3">
@@ -119,14 +126,18 @@ export function PaymentCheckout() {
               </p>
             </div>
           </div>
-
-          <button
-            type="button"
+<form action="/api/checkout_sessions" method="POST">
+      <section>
+         <button
+            type="submit" role="link"
             // TODO: redirect to the Stripe Checkout page here.
-            className="mt-8 h-[60px] w-full rounded-[8px] bg-[#0070e0] text-lg font-bold text-white transition-colors hover:bg-[#0a86f2]"
+            className="mt-8 h-[60px] w-full rounded-[8px] bg-[#0070e0] text-lg font-bold text-white transition-colors cursor-pointer hover:bg-[#0a86f2]"
           >
             Pay {formatAmount(currency, selected.amount)}
           </button>
+      </section>
+    </form>
+         
 
           <p className="mt-4 text-center text-xs text-[#808089]">
             Powered by Stripe · <span className="hover:text-white">Terms</span> ·{" "}

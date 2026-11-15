@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { admin } from "better-auth/plugins"
 
 const client = new MongoClient(process.env.MONGO_DB_URL as string);
 const db = client.db("hireloop_users");
@@ -9,6 +10,9 @@ export const auth = betterAuth({
   database: mongodbAdapter(db, {
     client,
   }),
+   plugins: [
+        admin() 
+    ],
   emailAndPassword: { 
     enabled: true, 
   }, 

@@ -14,8 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { manageJobs } from "@/lib/job"
+import { authClient } from "@/lib/auth-client"
 
-const jobs: JobPayload[] = await manageJobs()
 
 const todayISO = new Date().toISOString().slice(0, 10)
 
@@ -69,9 +69,22 @@ function FilterSelect({
 }
 
 
-export function ManageJobs() {
+export  function ManageJobs() {
   const [status, setStatus] = React.useState<StatusFilter>("all")
   const [category, setCategory] = React.useState("all")
+  const [jobs, setJobs] = React.useState<JobPayload[]>([])
+  const { data: session } = authClient.useSession()
+
+React.useEffect(() => {
+    if (!session?.user.id) return
+
+    const fetchJobs = async () => {
+      const data = await manageJobs(`recruiterId=${session.user.id}`)
+      setJobs(data)
+    }
+
+    fetchJobs()
+  }, [session?.user.id])
 
   const activeCount = jobs.filter((job) => !isClosed(job)).length
   const closedCount = jobs.length - activeCount
@@ -186,7 +199,7 @@ export function ManageJobs() {
               {visible.map((job) => {
                 const closed = isClosed(job)
                 return (
-                  <tr key={`${job.company}-${job.title}`} className="border-t border-white/[0.06] transition-colors hover:bg-white/[0.02]">
+                  <tr key={job._id} className="border-t border-white/[0.06] transition-colors hover:bg-white/[0.02]">
                     <td className="px-4 py-3">
                       <p className="text-[13px] font-medium text-[#ededef]">{job.title}</p>
                       <p className="mt-0.5 text-xs text-[#a0a0ab]">{job.location}</p>
@@ -223,6 +236,13 @@ export function ManageJobs() {
                     </td>
                     <td className="px-4 py-3">
                       <span className="flex items-center gap-2">
+                        <Link
+                          href={`/dashboard/recruiter/manage-jobs/${job._id}/applications`}
+                          title="View applications"
+                          className="flex size-8 items-center justify-center rounded-[8px] text-[#c4c7c8] transition-colors hover:bg-white/5"
+                        >
+                          <Users className="size-4" />
+                        </Link>
                         <button
                           type="button"
                           title="Edit job"

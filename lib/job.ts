@@ -12,11 +12,11 @@ const res=await fetch(`${baseUrl}/jobs`,{
 })
 return res.json()
 }
-export const jobDetails=async(id:string)=>{
-  const res=await fetch(`${baseUrl}/jobs/${id}`)
+export const jobDetails = async (id: string): Promise<JobPayload> => {
+  const res = await fetch(`${baseUrl}/jobs/${id}`)
   return res.json()
 }
-export const manageJobs=async(query='')=>{
-  const res=await fetch(`${baseUrl}/jobs?${query}`)
+export const manageJobs = async (query = ""): Promise<JobPayload[]> => {
+  const res = await fetch(`${baseUrl}/jobs?${query}`)
   return res.json()
 }

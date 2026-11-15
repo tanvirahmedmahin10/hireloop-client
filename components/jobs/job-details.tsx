@@ -17,6 +17,7 @@ import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 import { appliedJobs } from "@/lib/actions/applications"
 import { applicationsDataCount } from "@/lib/application"
+import { getUserPremiumById } from "@/lib/actions/payments"
 
 const formatDate = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", {
@@ -88,7 +89,9 @@ export  function JobDetails ({ job }: { job: JobPayload }) {
  }
  else if(user.role==='seeker'){
   const countResult=await applicationsDataCount(`applicantId=${user.id}`)
-  if(countResult.count>6){
+  const premiumResult=await getUserPremiumById(user.id)
+  console.log(premiumResult);
+  if(!premiumResult.premium && countResult.count>6){
    route.push('/payment')
    return
   }

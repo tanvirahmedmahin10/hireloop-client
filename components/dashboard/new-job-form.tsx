@@ -1,9 +1,10 @@
 "use client"
 export interface JobPayload {
-  _id:number
+  _id: string
   title: string
   company: string
   category: string
+  recruiterId:string
   jobType: string
   location: string
   responsibilities: string
@@ -42,6 +43,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { createJobs } from "@/lib/job"
+import { authClient } from "@/lib/auth-client"
 
 const jobTypes = ["Full-time", "Part-time", "Contract", "Internship"]
 const categories = [
@@ -98,15 +100,20 @@ function Field({
 }
 
 export function NewJobForm() {
+   const { data: session } = authClient.useSession()
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
+    
     event.preventDefault()
     const data = Object.fromEntries(new FormData(event.currentTarget)) as Record<string, string>
 
     const { minSalary, maxSalary, salaryFrequency, ...fields } = data
+   
+
     const payload: JobPayload = {
   ...fields,
   isRemote: "isRemote" in data,
   deadline: data.deadline || null,
+  recruiterId:session?.user.id ?? '',
   salary: {
     min: minSalary ? Number(minSalary) : null,
     max: maxSalary ? Number(maxSalary) : null,
